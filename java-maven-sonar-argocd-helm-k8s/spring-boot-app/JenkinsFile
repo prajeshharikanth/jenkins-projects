@@ -29,24 +29,18 @@ pipeline {
         }
       }
     }
-    stage('Build and Push Docker Image') {
-  environment {
-    DOCKER_IMAGE = "prajesh05/ultimate-cicd-pipeline:v1"
-    DOCKER_REGISTRY = "https://hub.docker.com"  // The Docker Hub registry URL
-    DOCKER_USERNAME = "prajesh05"  // Your Docker Hub username
-    DOCKER_PASSWORD = Prajesh09@
-  }
-  steps {
-    script {
-      // Authenticate with Docker Hub
-      sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY"
-
-      // Build and push the Docker image
-      sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && docker build -t ${DOCKER_IMAGE} .'
-      sh "docker push ${DOCKER_IMAGE}"
-
-      // Logout from Docker Hub
-      sh "docker logout $DOCKER_REGISTRY"
+   stage('Build and Push Docker Image') {
+      environment {
+        DOCKER_IMAGE = "prajesh05/ultimate-cicd-pipeline:v1"
+        // DOCKERFILE_LOCATION = "java-maven-sonar-argocd-helm-k8s/spring-boot-app/Dockerfile"
+        REGISTRY_CREDENTIALS = credentials('docker-cred')
+      }
+      steps {
+        script {
+            sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && docker build -t ${DOCKER_IMAGE} .'
+            def dockerImage = docker.image("${DOCKER_IMAGE}")
+            docker.withRegistry('https://hub.docker.com', "docker-cred") {
+                dockerImage.push()
             }
         }
       }
