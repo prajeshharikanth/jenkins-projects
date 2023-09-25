@@ -32,7 +32,7 @@ pipeline {
     stage('Build and Push Docker Image') {
   environment {
     DOCKER_IMAGE = "prajesh05/ultimate-cicd-pipeline:v1"
-    DOCKER_REGISTRY = "docker.io"  // The Docker Hub registry URL
+    DOCKER_REGISTRY = "https://hub.docker.com"  // The Docker Hub registry URL
     DOCKER_USERNAME = "prajesh05"  // Your Docker Hub username
     DOCKER_PASSWORD = Prajesh09@
   }
